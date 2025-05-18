@@ -1,95 +1,116 @@
-# TaskManager-Debug
-EJERCICIO JESÚS KOTEST EN ESTA RAMA: [EJERCICIO KOTEST JESÚS](https://github.com/jesuscb123/taskmanager-debug/tree/EjercicioJesus-Kotest)
-## Introducción
+# TaskManager - Pruebas unitarias
 
-## Errores encontrados 
+** 1. Selección del servicio **
 
-### 1. Error al seleccionar por consola la opción 6 del menú principal(Jesús)
+He elegido mi servicio UsuarioService, en este caso no tenía el repositorio inyectado en el constructor, pero lo he añadido para poder hacer los tests.
 
-![img.png](assets/img.png)
-![img.png](assets/errorEncontrado.png)
+** 2. Identificación de métodos **
 
-He creado un punto de ruptura justo en el método menu qué es justo dónde salta el error. El problema era que el código lanza un error cuando no hay tareas existentes para cerrar
-pero no lo captura, lo cuál hace que el programa se cierre de manera inminente. La solución ha sido introducir un try-catch en el método menu.
+- Método crearUsuario(nombre: String): Usuario
+Recibe un string que es el nombre del usuario que queremos crear y devuelve una instancia de usuario.
 
-Para encontrar el error, también podemos utilizar un println y ver por consola dónde está el error:
+- Método asignarTareaAUsuario(usuario: Usuario, tarea: Tarea?)
+Recibe por parámetros un usuario de tipo usuario y una tarea que puede ser nula. Asignará la tarea al usuario si la tarea no es nula.
 
-![img_1.png](assets/img_1.png)
-![img_2.png](assets/img_2.png)
+- Método obtenerTareasPorUsuario(usuario: Usuario): List<Tarea>
+Recibe por parámetros un usuario de tipo usuario para buscar las tareas que tiene asignada y devuelve una lista de tareas.
 
-### 2. Error al seleccionar la opción 5 en el menú principal.
+- Método obtenerUsuarioPorNombre(nombre: String): Usuario?
 
-![img_4.png](assets/img_4.png)
-![img_5.png](assets/img_5.png)
+Recibe un string con el nombre del usuario a buscar y devuelve la instancia de usuario correspondiente o nulo si no existe.
 
-He puesto un punto de ruptura en el menú, aunque al final no fue del todo necesario, para ver si saltaba el error. El problema era que al no haber ninguna tarea daba error, haciendo que el programa se cierre.
-Para solucionarlo he implementado un try and catch en el menu de la aplicación, para si vuelve a dar el error, que el programa no se cierre.
+** 3. Diseño de casos de prueba
 
-![img_6.png](assets/img_6.png)
+| Método                       | Caso de prueba                      | Estado inicial del mock               | Acción                                        | Resultado esperado                                             |
+|-----------------------------|-----------------------------------|-------------------------------------|-----------------------------------------------|---------------------------------------------------------------|
+| crearUsuario(nombre)         | Nombre válido                     | mockRepositorio acepta usuario      | llamar crearUsuario("Elvira")                 | Retorna instancia de Usuario, mockRepositorio.agregarUsuario llamado |
+| crearUsuario(nombre)         | Nombre vacío                     | -                                   | llamar crearUsuario("")                       | Lanza IllegalArgumentException                                |
+| asignarTareaAUsuario(usuario, tarea) | Tarea válida                     | tarea mock permite asignar usuario  | llamar asignarTareaAUsuario(usuario, tarea)   | tarea.asignarUsuario y usuario.asignarTarea llamados con tarea  |
+| asignarTareaAUsuario(usuario, tarea) | Tarea nula                       | -                                   | llamar asignarTareaAUsuario(usuario, null)    | Lanza IllegalArgumentException                                    |
+| obtenerTareasPorUsuario(usuario) | Usuario con tareas asignadas       | usuario mock devuelve lista de tareas | llamar obtenerTareasPorUsuario(usuario)       | Devuelve lista de tareas obtenida desde usuario                |
+| obtenerTareasPorUsuario(usuario) | Usuario sin tareas asignadas       | usuario mock devuelve lista vacía   | llamar obtenerTareasPorUsuario(usuario)       | Devuelve lista vacía                                           |
+| obtenerUsuarioPorNombre(nombre) | Usuario existente en repositorio   | mockRepositorio devuelve usuario    | llamar obtenerUsuarioPorNombre("Lucía")       | Devuelve el usuario mockeado                                  |
+| obtenerUsuarioPorNombre(nombre) | Usuario inexistente en repositorio | mockRepositorio devuelve null       | llamar obtenerUsuarioPorNombre("Desconocido") | Devuelve null                                                |
 
-### 3. Error al separar las etiquetas (Jose Luis)
+** 4. Implementación de los tests
 
-#### Imagen previa al error
-![](assets/etiqueta_error.png)
+    describe("Crear usuario") {
+        it("Debe crear un usuario y agregarlo al repositorio") {
+            val nombre = "Elvira"
+            val usuario = usuarioService.crearUsuario(nombre)
 
-Nos dimos cuenta de que, al pedir las etiquetas al usuario, todo lo que escribía (por ejemplo "urgente; oficina; reunión") 
-llegaba al sistema como una sola frase en vez de como tres palabras separadas. Eso hacía que, al buscar tareas por una 
-etiqueta concreta, nunca apareciera nada. Metimos un "punto de parada" para inspeccionar lo que se leía y comprobamos 
-que seguía siendo un único texto. La solución fue muy simple: en lugar de pasar la cadena tal cual, la separamos donde 
-hubiera ";", quitamos espacios sobrantes, de modo que el servicio recibiera siempre una 
-lista limpia de etiquetas. Después de ajustar un par de pruebas para cubrir casos raros, todo empezó a funcionar bien.
+            usuario.nombre shouldBe nombre
+            verify { mockRepositorio.agregarUsuario(usuario) }
+        }
 
-#### Imagen posterior al error
-![](assets/etiqueta_solucion.png)
-
-### 4. Error al asignar una tarea ya finalizada (Elvira)
-
-Probando el programa, nos percatamos de que era posible asignar una tarea ya finalizada a un usuario, lo que no tendría mucho sentido.
-Para localizar exactamente dónde estaba el error, colocamos un punto de ruptura en la función de "asignarTarea()"
-
-![puntoRuptura.png](assets/puntoRuptura.png)
-
-Aquí pudimos comprobar que asignaba la tarea directamente sin comprobar el estado de la tarea
-
-![estadoNoComprobado.png](assets/estadoNoComprobado.png)
-
-En esta captura se observa como se puede asignar una tarea finalizada:
-
-![tareaConError.png](assets/tareaConError.png)
-
-Para solucionar esto añadimos una comprobación en la que si el estado de la tarea es igual a finalizada, se saliera del programa retornando y mostrando un mensaje de error.
-
-![arreglagoError.png](assets/arregladoError.png)
-
-En esta captura se ve el error arreglado:
-
-![correcto.png](assets/correcto.png)
-
-### 5. Error al intentar cerrar una tarea
-
-![img.png](assets/errorGonzalo.png)
-
-Estaba trabajando en la clase Consola, concretamente en el método que muestro arriba, y encontré este error.
-
-Al agregar varias tareas, forzaba que ambas se colocasen tanto en eventos como en tareas
-
-![img.png](assets/depurandoGonzalo.png)
-
-He colocado varios breakpoints donde he encontrado el error para comprobar que es lo que causaba esto, y me he dado cuenta de lo siguiente:
-El método provocaba un cast forzado de todos los elementos de la lista a Evento y Tarea, sin comprobar el tipo.
-
-Para solucionar el error, sustituimos el bloque de error por el siguiente para evitarlo
-
-````kotlin
-for (actividad in x) {
-    if (actividad is Evento) {
-        eventos.add(actividad)
-    } else if (actividad is Tarea) {
-        tareas.add(actividad)
+        it("Debe lanzar excepción si el nombre está vacío") {
+            val nombreVacio = ""
+            shouldThrow<IllegalArgumentException> {
+                usuarioService.crearUsuario(nombreVacio)
+            }
+        }
     }
-}
-````
 
-![img.png](assets/errorArreglado.png)
+    describe("Asignar tarea a usuario") {
+        it("Debe asignar la tarea al usuario") {
+            val usuario = mockk<Usuario>(relaxed = true)
+            val tarea = mockk<Tarea>(relaxed = true)
 
-Quedando así el error arreglado y corregido.
+            usuarioService.asignarTareaAUsuario(usuario, tarea)
+
+            verify { tarea.asignarUsuario(usuario) }
+            verify { usuario.asignarTarea(tarea) }
+        }
+
+        it("Debe lanzar una excepción si la tarea es nula") {
+            val usuario = mockk<Usuario>(relaxed = true)
+            val tarea: Tarea? = null
+
+            shouldThrow<IllegalArgumentException> {
+                usuarioService.asignarTareaAUsuario(usuario, tarea)
+            }
+        }
+        }
+
+
+    describe("Obtener tareas por usuario") {
+        it("Debe devolver la lista de tareas del usuario") {
+            val usuario = mockk<Usuario>()
+            val tareasMock = listOf(mockk<Tarea>(), mockk<Tarea>())
+
+            every { usuario.obtenerTareasAsignadas() } returns tareasMock
+
+            val resultado = usuarioService.obtenerTareasPorUsuario(usuario)
+
+            resultado shouldContainExactly tareasMock
+        }
+    }
+
+    describe("Obtener usuario por nombre") {
+        it("Debe devolver el usuario si existe") {
+            val nombre = "Lucía"
+            val usuarioMock = mockk<Usuario>()
+
+            every { mockRepositorio.obtenerUsuarioPorNombre(nombre) } returns usuarioMock
+
+            val resultado = usuarioService.obtenerUsuarioPorNombre(nombre)
+
+            resultado shouldBe usuarioMock
+        }
+
+        it("Debe devolver null si no existe el usuario") {
+            val nombre = "Desconocido"
+
+            every { mockRepositorio.obtenerUsuarioPorNombre(nombre) } returns null
+
+            val resultado = usuarioService.obtenerUsuarioPorNombre(nombre)
+
+            resultado shouldBe null
+        }
+    }
+
+** 5. Ejecución y reporte de resultados
+
+Adjunto una imagen de los test pasados correctamente y el tiempo que ha tardado en hacerlos:
+
+![Número de test pasados y tiempo](./src/main/kotlin/images/testPasados.png)

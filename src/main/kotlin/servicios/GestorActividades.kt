@@ -116,7 +116,7 @@ class GestorActividades {
     private fun crearTarea() {
         val descripcion = pedirDescripcion()
         val etiquetas = pedirEtiquetas()
-        servicio.crearTarea(descripcion, etiquetas)
+        servicio.crearTarea(descripcion)
         salida.mostrar("\nTarea creada con éxito y etiquetas asignadas.")
     }
 
@@ -131,7 +131,7 @@ class GestorActividades {
         val tareaPrincipal = obtenerTarea()
         salida.mostrar("\nDescribe la subtarea a asociar:")
         val descripcionSubtarea = pedirDescripcion()
-        val subtarea = servicio.crearTarea(descripcionSubtarea, etiquetas = pedirEtiquetas())
+        val subtarea = servicio.crearTarea(descripcionSubtarea)
         servicio.asociarSubtarea(tareaPrincipal, subtarea)
         salida.mostrar("\nSubtarea asociada a la tarea principal.")
     }

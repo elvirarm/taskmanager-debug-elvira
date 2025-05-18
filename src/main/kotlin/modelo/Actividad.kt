@@ -2,7 +2,7 @@ package es.prog2425.taskmanager.modelo
 
 import es.prog2425.taskmanager.utils.Utilidades
 
-abstract class Actividad(protected val descripcion: String) {
+abstract class Actividad(val descripcion: String) {
     protected val id: Int
     protected val fechaCreacion: String
     var etiquetas: MutableList<String> = mutableListOf()
