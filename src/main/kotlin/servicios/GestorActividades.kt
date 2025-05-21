@@ -1,6 +1,7 @@
 package es.prog2425.taskmanager.servicios
 
 
+import es.prog2425.taskmanager.datos.DatosActividad
 import es.prog2425.taskmanager.modelo.Actividad
 import es.prog2425.taskmanager.presentacion.Consola
 import es.prog2425.taskmanager.presentacion.Interfaz
@@ -25,7 +26,7 @@ class GestorActividades {
                 salida.mostrarMenu()
                 when (salida.leerNum()) {
                     -1 -> salida.mostrar("\nOpcion no valida.")
-                    1 -> servicio.crearEvento(pedirDescripcion(), pedirFecha(), pedirUbicacion())
+                    1 -> crearEvento()
                     2 -> crearTarea()
                     3 -> listarActividades()
                     4 -> asociarSubtarea()
@@ -43,6 +44,18 @@ class GestorActividades {
             }
 
         } while (!salir)
+    }
+
+    private fun crearEvento() {
+        val datos = pedirDatosActividad()
+        servicio.crearEvento(datos.descripcion, datos.fecha, datos.ubicacion)
+    }
+
+    private fun pedirDatosActividad(): DatosActividad {
+        val descripcion = pedirDescripcion()
+        val fecha = pedirFecha()
+        val ubicacion = pedirUbicacion()
+        return DatosActividad(descripcion, fecha, ubicacion)
     }
 
     private fun consultarHistorialTarea() {
@@ -138,14 +151,10 @@ class GestorActividades {
 
     // Obtener tarea por ID o descripción
     private fun obtenerTarea(): Tarea {
-        // Listamos todas las tareas para que el usuario vea y elija
         val tareas = servicio.listarActividades().filterIsInstance<Tarea>()
-
         if (tareas.isEmpty()) {
             salida.mostrar("\nNo hay tareas disponibles.")
-            println("Error no controlado si no hay try-catch")
             throw IllegalStateException("No hay tareas disponibles para seleccionar.")
-
         }
 
         salida.mostrar("\nSelecciona una tarea de la lista:")
@@ -153,18 +162,15 @@ class GestorActividades {
             salida.mostrar("${index + 1}. ${tarea.obtenerDetalle()}")
         }
 
-        // Le pedimos al usuario que elija una tarea por su número (índice + 1)
-        var tareaSeleccionada: Tarea? = null
-        while (tareaSeleccionada == null) {
+        var tareaSeleccionada: Tarea?
+        do {
             salida.mostrar("\nIntroduce el número de la tarea:")
             val numeroTarea = salida.leerNum()
-
-            if (numeroTarea in 1..tareas.size) {
-                tareaSeleccionada = tareas[numeroTarea - 1]
-            } else {
+            tareaSeleccionada = tareas.getOrNull(numeroTarea - 1)
+            if (tareaSeleccionada == null) {
                 salida.mostrar("\nOpción inválida. Por favor, elige un número válido.")
             }
-        }
+        } while (tareaSeleccionada == null)
 
         return tareaSeleccionada
     }

@@ -2,9 +2,9 @@ package es.prog2425.taskmanager.modelo
 
 import es.prog2425.taskmanager.utils.Utilidades
 
-abstract class Actividad(val descripcion: String) {
-    protected val id: Int
-    protected val fechaCreacion: String
+abstract class Actividad(private val descripcion: String) {
+    private val id: Int
+    private val fechaCreacion: String
     var etiquetas: MutableList<String> = mutableListOf()
 
     init {
@@ -13,11 +13,7 @@ abstract class Actividad(val descripcion: String) {
         id = GeneradorID().generarId(fechaCreacion)
     }
 
-    fun agregarEtiqueta(etiqueta: String) {
-        if (etiqueta.isNotBlank()) {
-            etiquetas.add(etiqueta.trim())
-        }
-    }
+
 
     open fun obtenerDetalle(): String {
         val etiquetasStr = if (etiquetas.isNotEmpty()) "Etiquetas: ${etiquetas.joinToString(", ")}" else "Sin etiquetas"
