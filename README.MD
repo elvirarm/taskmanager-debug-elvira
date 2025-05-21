@@ -17,17 +17,21 @@ Los errores que me está indicando son:
 
 - class UsuarioServiceTest should be declared in a file named UsuarioServiceTest.kt
 
-   Debo añadirle la extensión .kt a ese archivo
+   Solución: Debo cambiarle el nombre porque me equivoqué y le puse Actividad en vez de Usuario porque al principio iba a hacer la actividad anterior con actividad.
+
+![Solucionado problema con el nombre del archivo de test](./src/main/kotlin/images/cambioNombre.png)
+
 
 -  Wildcard import en ActividadServiceTest
    
-   Esto quiere decir que he hecho un import *, para que sea más controlado se recomienda importar solo lo necesario.
+   Solución: Esto quiere decir que he hecho un import *, para que sea más controlado se recomienda importar solo lo necesario.
+
 
 - File must end with a newline en IUsuarioService, en UsuarioService y en Utilidades
 
-   Los archivos tienen que terminar con un salto de línea. Así que para arreglarlo añadiré un salto de líneas a todos los archivos.
+   Solución: Los archivos tienen que terminar con un salto de línea. Así que para arreglarlo añadiré un salto de líneas a todos los archivos.
 
 - Unexpected blank line(s) before "}"
 
-   He dejado un espacio antes de llave en la clase IUsuarioService, así que lo eliminaré.
+   Solución: He dejado un espacio antes de llave en la clase IUsuarioService, así que lo eliminaré.
 
