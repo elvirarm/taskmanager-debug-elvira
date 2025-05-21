@@ -26,6 +26,15 @@ Los errores que me está indicando son:
    
    Solución: Esto quiere decir que he hecho un import *, para que sea más controlado se recomienda importar solo lo necesario.
 
+    Imagen de los imports antes:
+
+    ![Cómo estaban los imports antes](./src/main/kotlin/images/importsantes.png)
+
+    Imagen de los imports arreglados:
+
+    |[Imports actuales](./src/main/kotlin/images/importdespues.png)
+
+
 
 - File must end with a newline en IUsuarioService, en UsuarioService y en Utilidades
 
