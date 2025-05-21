@@ -1,17 +1,26 @@
 # TaskManager - Linting con Ktlint
 
-1. Estoy usando Ktlint, para instalarlo he incluido en el fichero de build.gradle lo siguiente:
-   ![Configuración de ktlint](./src/main/kotlin/images/add_ktlint.jpg)
+1. Instalar la herramienta elegida (Detekt o Ktlint) e incluir capturas de pantalla del proceso.
+    
+Estoy usando Ktlint, para instalarlo he incluido en el fichero de build.gradle lo siguiente:
+   
+![Configuración de ktlint](./src/main/kotlin/images/add_ktlint.jpg)
 
-2. Para ejecutar el diagnóstico abro la terminal que el mismo IDE proporciona y ejecuto el siguiente comando:
+2. Integrar el analizador en el proyecto que se está desarrollando y ejecutar el análisis.
+
+Para ejecutar el diagnóstico abro la terminal que el mismo IDE proporciona y ejecuto el siguiente comando:
 
    ./gradlew ktlintCheck
 
-3. He obtenido los siguientes errores:
+3. Identificar al menos 5 tipos de errores detectados.
+
+He obtenido los siguientes errores
 
 ![Diagnóstico 1](./src/main/kotlin/images/diagnostico1.png)
 
 ![Diagnóstico 2](./src/main/kotlin/images/diagnostico2.png)
+
+4. Para cada tipo de error, documentar:
 
 Los errores que me está indicando son:
 
@@ -49,3 +58,13 @@ He vuelto a ejecutar el analizador de código y me ha dado un error:
 - File must end with a newline (\n) (final-newline) en build.gradle.kts
 
     Solución: añadirle un espacio final
+
+5. Explorar y modificar al menos una opción de configuración del analizador distinta de la predeterminada; describir cómo afecta al código y por tanto al informe de errores.
+
+He añadido esta linea en el archivo build.gradle.kts
+
+    disabledRules.set(setOf("no-wildcard-imports"))
+
+Esto lo que hace es que no me saltaría como error los wildcard import.
+
+En mi caso me saltaba porque Kotlin prefiere imports más específicos como ya he explicado antes, después de la modificación el informe de error los obviaría.
