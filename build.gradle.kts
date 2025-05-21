@@ -1,5 +1,23 @@
+import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
+
 plugins {
     kotlin("jvm") version "2.0.10"
+    id("org.jlleitschuh.gradle.ktlint") version "11.0.0"
+}
+
+// Configuración de klint
+ktlint {
+    verbose.set(true)
+    outputToConsole.set(true)
+    coloredOutput.set(true)
+    reporters {
+        reporter(ReporterType.CHECKSTYLE)
+        reporter(ReporterType.JSON)
+        reporter(ReporterType.HTML)
+    }
+    filter {
+        exclude("**/style-violations.kt")
+    }
 }
 
 group = "prog2425.dam1.prueba-calc-propio"
