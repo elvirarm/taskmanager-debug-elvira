@@ -8,5 +8,4 @@ interface IUsuarioService {
     fun asignarTareaAUsuario(usuario: Usuario, tarea: Tarea?)
     fun obtenerTareasPorUsuario(usuario: Usuario): List<Tarea>
     fun obtenerUsuarioPorNombre(nombre: String): Usuario?
-
 }
