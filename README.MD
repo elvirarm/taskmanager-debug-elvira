@@ -44,3 +44,8 @@ Los errores que me está indicando son:
 
    Solución: He dejado un espacio antes de llave en la clase IUsuarioService, así que lo eliminaré.
 
+He vuelto a ejecutar el analizador de código y me ha dado un error:
+
+- File must end with a newline (\n) (final-newline) en build.gradle.kts
+
+    Solución: añadirle un espacio final
